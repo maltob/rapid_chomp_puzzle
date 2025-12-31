@@ -167,12 +167,19 @@ class _JigsawSetupScreenState extends State<JigsawSetupScreen> {
                     ),
                     if (_selectedImage != null) ...[
                       const SizedBox(height: 16),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.file(
-                          _selectedImage!,
-                          height: 200,
-                          fit: BoxFit.cover,
+                      Container(
+                        height: 200,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.black12,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.file(
+                            _selectedImage!,
+                            fit: BoxFit.contain,
+                          ),
                         ),
                       ),
                     ],
