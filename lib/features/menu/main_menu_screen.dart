@@ -46,7 +46,7 @@ class MainMenuScreen extends StatelessWidget {
                   ),
                 ),
                 const Text(
-                  'Choose your adventure',
+                  'Choose your puzzle',
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.grey,
@@ -56,7 +56,7 @@ class MainMenuScreen extends StatelessWidget {
                 const Spacer(),
                 _MenuButton(
                   title: 'MEMORY MATCH',
-                  subtitle: 'Test your focus',
+                  subtitle: 'Test your memory',
                   icon: Icons.grid_view_rounded,
                   color: const Color(0xFF6200EE),
                   onTap: () => Navigator.push(
@@ -69,7 +69,7 @@ class MainMenuScreen extends StatelessWidget {
                 const SizedBox(height: 24),
                 _MenuButton(
                   title: 'JIGSAW PUZZLE',
-                  subtitle: 'Classic challenge',
+                  subtitle: 'Classic relaxation',
                   icon: Icons.extension_rounded,
                   color: const Color(0xFF03DAC6),
                   onTap: () => Navigator.push(
