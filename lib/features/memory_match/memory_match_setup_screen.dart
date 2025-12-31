@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import '../../core/theme/app_constants.dart';
 import '../../core/services/storage_service.dart';
 import 'memory_match_screen.dart';
+import '../../core/widgets/gradient_button.dart';
 
 class MemoryMatchSetupScreen extends StatefulWidget {
   const MemoryMatchSetupScreen({super.key});
@@ -146,14 +147,11 @@ class _MemoryMatchSetupScreenState extends State<MemoryMatchSetupScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ElevatedButton(
-                onPressed: _startGame,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  backgroundColor: Theme.of(context).primaryColor,
-                  foregroundColor: Colors.white,
-                ),
-                child: const Text('Start Game', style: TextStyle(fontSize: 18)),
+              GradientButton(
+                title: 'Start Game',
+                icon: Icons.grid_view_rounded,
+                color: const Color(0xFF6200EE),
+                onTap: _startGame,
               ),
               const SizedBox(height: 32),
               const Text(

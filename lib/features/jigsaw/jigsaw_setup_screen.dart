@@ -7,6 +7,7 @@ import '../../core/services/storage_service.dart';
 import '../../core/theme/app_constants.dart';
 import 'jigsaw_piece.dart';
 import 'jigsaw_playground.dart';
+import '../../core/widgets/gradient_button.dart';
 
 class JigsawSetupScreen extends StatefulWidget {
   const JigsawSetupScreen({super.key});
@@ -93,17 +94,11 @@ class _JigsawSetupScreenState extends State<JigsawSetupScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ElevatedButton(
-                onPressed: _selectedImage != null ? _startGame : null,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  backgroundColor: Theme.of(context).primaryColor,
-                  foregroundColor: Colors.white,
-                ),
-                child: const Text(
-                  'Start Puzzle',
-                  style: TextStyle(fontSize: 18),
-                ),
+              GradientButton(
+                title: 'Start Puzzle',
+                icon: Icons.extension_rounded,
+                color: const Color(0xFF03DAC6),
+                onTap: _selectedImage != null ? _startGame : null,
               ),
               const SizedBox(height: 32),
               const Text(
