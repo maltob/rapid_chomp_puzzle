@@ -49,6 +49,13 @@ class _JigsawBody extends StatefulWidget {
 
 class _JigsawBodyState extends State<_JigsawBody> {
   Size? _lastSize;
+  bool _isPreviewExpanded = false;
+
+  void _togglePreview() {
+    setState(() {
+      _isPreviewExpanded = !_isPreviewExpanded;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,31 +130,84 @@ class _JigsawBodyState extends State<_JigsawBody> {
 
         return Stack(
           children: [
-            // Normal mode: Side preview
-            if (!engine.isEasyMode && !engine.isComplete)
-              Positioned(
-                left: 16,
-                top: 16,
-                child: Container(
-                  width: 120,
-                  height: 120 / aspectRatio,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.primary.withOpacity(0.5),
-                      width: 2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 4,
-                      ),
-                    ],
+            // Exit Button (Top Right)
+            Positioned(
+              top: 10,
+              right: 10,
+              child: SafeArea(
+                child: IconButton(
+                  icon: Icon(
+                    Icons.close,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withOpacity(0.6),
                   ),
-                  child: RawImage(
-                    image: engine.resolvedImage,
-                    fit: BoxFit.contain,
+                  onPressed: () => Navigator.pop(context),
+                  tooltip: 'Exit to Menu',
+                ),
+              ),
+            ),
+
+            // Normal mode: Side preview (Interactive)
+            if (!engine.isEasyMode && !engine.isComplete)
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeInOutExpo,
+                left: _isPreviewExpanded ? 40 : 16,
+                top: _isPreviewExpanded ? 40 : 16,
+                width: _isPreviewExpanded ? constraints.maxWidth - 80 : 120,
+                height: _isPreviewExpanded
+                    ? (constraints.maxWidth - 80) / aspectRatio
+                    : 120 / aspectRatio,
+                child: GestureDetector(
+                  onTap: _togglePreview,
+                  child: Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.primary,
+                            width: _isPreviewExpanded ? 4 : 2,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(
+                                _isPreviewExpanded ? 0.5 : 0.3,
+                              ),
+                              blurRadius: _isPreviewExpanded ? 15 : 4,
+                              spreadRadius: _isPreviewExpanded ? 5 : 0,
+                            ),
+                          ],
+                        ),
+                        child: RawImage(
+                          image: engine.resolvedImage,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      if (!_isPreviewExpanded)
+                        Positioned.fill(
+                          child: Container(
+                            color: Colors.black12,
+                            child: Center(
+                              child: Icon(
+                                Icons.zoom_in,
+                                color: Colors.white.withOpacity(0.6),
+                                size: 32,
+                              ),
+                            ),
+                          ),
+                        ),
+                      if (_isPreviewExpanded)
+                        Positioned(
+                          right: 8,
+                          top: 8,
+                          child: Icon(
+                            Icons.zoom_out_map,
+                            color: Colors.white.withOpacity(0.8),
+                            size: 32,
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),
