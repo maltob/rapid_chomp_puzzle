@@ -1,6 +1,6 @@
 # chomp_puzzle
 
-A rapidly developed app to allow for creation of memory match and jigsaw puzzles using only local resources.
+A rapidly (AI generated with human review/engineering) developed app to allow for creation of memory match and jigsaw puzzles using only local resources.
 
 ## Getting Started
 
