@@ -141,241 +141,268 @@ class _MemoryMatchSetupScreenState extends State<MemoryMatchSetupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Memory Match Setup')),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              GradientButton(
-                title: 'Start Game',
-                icon: Icons.grid_view_rounded,
-                color: const Color(0xFF6200EE),
-                onTap: _startGame,
-              ),
-              const SizedBox(height: 32),
-              const Text(
-                '1. Select Number of Pairs',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 12,
-                children: AppConstants.memoryMatchOptions.map((pairs) {
-                  return ChoiceChip(
-                    label: Text('$pairs Pairs'),
-                    selected: _selectedPairs == pairs,
-                    onSelected: (selected) {
-                      if (selected) setState(() => _selectedPairs = pairs);
-                    },
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 32),
-              const Text(
-                '2. Choose Card Style',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 12),
-              SwitchListTile(
-                title: const Text('Use Custom Images'),
-                subtitle: const Text('Choose your own photos for the cards'),
-                value: _useCustomImages,
-                onChanged: (val) => setState(() => _useCustomImages = val),
-              ),
-              if (_useCustomImages) ...[
-                const SizedBox(height: 12),
-                ElevatedButton.icon(
-                  onPressed: _pickImages,
-                  icon: const Icon(Icons.add_photo_alternate),
-                  label: Text(
-                    'Select ${_selectedPairs} Images (${_customImages.length} selected)',
-                  ),
-                ),
-                if (_customImages.isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    height: 100,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: _customImages.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.file(
-                              _customImages[index],
-                              width: 100,
-                              height: 100,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  if (_customImages.length >= _selectedPairs)
-                    TextButton.icon(
-                      onPressed: () {
-                        final controller = TextEditingController();
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text('Save Preset'),
-                            content: TextField(
-                              controller: controller,
-                              decoration: const InputDecoration(
-                                labelText: 'Preset Name',
-                              ),
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text('Cancel'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  if (controller.text.isNotEmpty) {
-                                    _savePreset(controller.text);
-                                    Navigator.pop(context);
-                                  }
-                                },
-                                child: const Text('Save'),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                      icon: const Icon(Icons.save),
-                      label: const Text('Save as Preset'),
-                    ),
-                ],
-              ],
-              if (_presets.isNotEmpty) ...[
-                const SizedBox(height: 32),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: GradientButton(
+              title: 'Start Game',
+              icon: Icons.grid_view_rounded,
+              color: const Color(0xFF6200EE),
+              onTap: _startGame,
+            ),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const Text(
-                      '3. Quick Presets',
+                      '1. Select Number of Pairs',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    TextButton.icon(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text('Clear All Presets'),
-                            content: const Text(
-                              'Are you sure you want to delete all saved presets?',
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text('Cancel'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  _clearPresets();
-                                  Navigator.pop(context);
-                                },
-                                child: const Text(
-                                  'Clear All',
-                                  style: TextStyle(color: Colors.red),
-                                ),
-                              ),
-                            ],
-                          ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 12,
+                      children: AppConstants.memoryMatchOptions.map((pairs) {
+                        return ChoiceChip(
+                          label: Text('$pairs Pairs'),
+                          selected: _selectedPairs == pairs,
+                          onSelected: (selected) {
+                            if (selected)
+                              setState(() => _selectedPairs = pairs);
+                          },
                         );
-                      },
-                      icon: const Icon(
-                        Icons.delete_sweep,
-                        color: Colors.redAccent,
-                      ),
-                      label: const Text(
-                        'Clear All',
-                        style: TextStyle(color: Colors.redAccent),
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 32),
+                    const Text(
+                      '2. Choose Card Style',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                ..._presets.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final preset = entry.value;
-                  final List<String> paths = (preset['images'] as List)
-                      .cast<String>();
-
-                  return Card(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    clipBehavior: Clip.antiAlias,
-                    child: InkWell(
-                      onTap: () => _applyPreset(preset),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ListTile(
-                            title: Text(
-                              preset['name'],
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            subtitle: Text('${preset['pairs']} pairs'),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.delete_outline,
-                                    color: Colors.grey,
+                    const SizedBox(height: 12),
+                    SwitchListTile(
+                      title: const Text('Use Custom Images'),
+                      subtitle: const Text(
+                        'Choose your own photos for the cards',
+                      ),
+                      value: _useCustomImages,
+                      onChanged: (val) =>
+                          setState(() => _useCustomImages = val),
+                    ),
+                    if (_useCustomImages) ...[
+                      const SizedBox(height: 12),
+                      ElevatedButton.icon(
+                        onPressed: _pickImages,
+                        icon: const Icon(Icons.add_photo_alternate),
+                        label: Text(
+                          'Select $_selectedPairs Images (${_customImages.length} selected)',
+                        ),
+                      ),
+                      if (_customImages.isNotEmpty) ...[
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          height: 100,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: _customImages.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.file(
+                                    _customImages[index],
+                                    width: 100,
+                                    height: 100,
+                                    fit: BoxFit.cover,
                                   ),
-                                  onPressed: () => _deletePreset(index),
                                 ),
-                                const Icon(Icons.play_circle_fill, size: 32),
-                              ],
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        if (_customImages.length >= _selectedPairs)
+                          TextButton.icon(
+                            onPressed: () {
+                              final controller = TextEditingController();
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Save Preset'),
+                                  content: TextField(
+                                    controller: controller,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Preset Name',
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        if (controller.text.isNotEmpty) {
+                                          _savePreset(controller.text);
+                                          Navigator.pop(context);
+                                        }
+                                      },
+                                      child: const Text('Save'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.save),
+                            label: const Text('Save as Preset'),
+                          ),
+                      ],
+                    ],
+                    if (_presets.isNotEmpty) ...[
+                      const SizedBox(height: 32),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            '3. Quick Presets',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Container(
-                            height: 60,
-                            padding: const EdgeInsets.only(
-                              left: 16,
-                              bottom: 12,
-                            ),
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: paths.length > 6 ? 6 : paths.length,
-                              itemBuilder: (context, i) {
-                                return Container(
-                                  width: 48,
-                                  margin: const EdgeInsets.only(right: 8),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(4),
-                                    image: DecorationImage(
-                                      image: FileImage(File(paths[i])),
-                                      fit: BoxFit.cover,
-                                    ),
-                                    border: Border.all(color: Colors.black12),
+                          TextButton.icon(
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Clear All Presets'),
+                                  content: const Text(
+                                    'Are you sure you want to delete all saved presets?',
                                   ),
-                                );
-                              },
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        _clearPresets();
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text(
+                                        'Clear All',
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            icon: const Icon(
+                              Icons.delete_sweep,
+                              color: Colors.redAccent,
+                            ),
+                            label: const Text(
+                              'Clear All',
+                              style: TextStyle(color: Colors.redAccent),
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  );
-                }),
-              ],
-              const SizedBox(height: 48),
-            ],
+                      const SizedBox(height: 12),
+                      ..._presets.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final preset = entry.value;
+                        final List<String> paths = (preset['images'] as List)
+                            .cast<String>();
+
+                        return Card(
+                          margin: const EdgeInsets.only(bottom: 16),
+                          clipBehavior: Clip.antiAlias,
+                          child: InkWell(
+                            onTap: () => _applyPreset(preset),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ListTile(
+                                  title: Text(
+                                    preset['name'],
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  subtitle: Text('${preset['pairs']} pairs'),
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.delete_outline,
+                                          color: Colors.grey,
+                                        ),
+                                        onPressed: () => _deletePreset(index),
+                                      ),
+                                      const Icon(
+                                        Icons.play_circle_fill,
+                                        size: 32,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  height: 60,
+                                  padding: const EdgeInsets.only(
+                                    left: 16,
+                                    bottom: 12,
+                                  ),
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: paths.length > 6
+                                        ? 6
+                                        : paths.length,
+                                    itemBuilder: (context, i) {
+                                      return Container(
+                                        width: 48,
+                                        margin: const EdgeInsets.only(right: 8),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            4,
+                                          ),
+                                          image: DecorationImage(
+                                            image: FileImage(File(paths[i])),
+                                            fit: BoxFit.cover,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.black12,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                    ],
+                    const SizedBox(height: 48),
+                  ],
+                ),
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

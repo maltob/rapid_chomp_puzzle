@@ -61,22 +61,6 @@ class _JigsawBodyState extends State<_JigsawBody> {
   Widget build(BuildContext context) {
     final engine = Provider.of<JigsawEngine>(context);
 
-    if (engine.isComplete) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('Puzzle Complete! 🏆', style: TextStyle(fontSize: 24)),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Back to Menu'),
-            ),
-          ],
-        ),
-      );
-    }
-
     if (engine.isImageLoading) {
       return const Center(child: CircularProgressIndicator());
     }
