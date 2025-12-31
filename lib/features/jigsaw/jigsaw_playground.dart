@@ -204,7 +204,7 @@ class _JigsawBodyState extends State<_JigsawBody> {
                 width: boxWidth,
                 height: boxHeight,
                 child: TweenAnimationBuilder<double>(
-                  duration: const Duration(milliseconds: 5000),
+                  duration: const Duration(milliseconds: 3000),
                   tween: Tween(begin: 0.0, end: 1.0),
                   builder: (context, opacity, child) {
                     return Opacity(
@@ -222,7 +222,7 @@ class _JigsawBodyState extends State<_JigsawBody> {
             if (engine.isComplete)
               Positioned.fill(
                 child: TweenAnimationBuilder<double>(
-                  duration: const Duration(milliseconds: 5000),
+                  duration: const Duration(milliseconds: 3000),
                   tween: Tween(begin: 0.0, end: 1.0),
                   builder: (context, opacity, child) {
                     final double textOpacity =

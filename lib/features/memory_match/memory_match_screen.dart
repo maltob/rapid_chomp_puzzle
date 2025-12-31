@@ -160,7 +160,7 @@ class _MemoryMatchBody extends StatelessWidget {
             if (engine.isGameOver)
               Positioned.fill(
                 child: TweenAnimationBuilder<double>(
-                  duration: const Duration(milliseconds: 5000),
+                  duration: const Duration(milliseconds: 3000),
                   tween: Tween(begin: 0.0, end: 1.0),
                   builder: (context, opacity, child) {
                     final double textOpacity =
